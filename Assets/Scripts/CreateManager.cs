@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
+using System.Linq;
+
 
 public class CreateManager : MonoBehaviour
 {
@@ -9,8 +12,12 @@ public class CreateManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string[] files = System.IO.Directory.GetFiles(
-            @"Assets", "*.png", System.IO.SearchOption.AllDirectories);
+        string[] files = Directory.GetFiles(
+            @"Assets/Resources", "*.png", SearchOption.AllDirectories
+            ).OrderBy(f => File.GetLastWriteTime(f).Date)
+            .ToArray();
+        //Array.Sort(files, CompareLastWriteTime);
+        
         file_length = files.Length;
         for (int i = 0; i < files.Length; i++)
         {
@@ -21,8 +28,10 @@ public class CreateManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        string[] files = System.IO.Directory.GetFiles(
-            @"Assets", "*.png", System.IO.SearchOption.AllDirectories);
+        string[] files = Directory.GetFiles(
+            @"Assets/Resources", "*.png", SearchOption.AllDirectories
+            ).OrderBy(f => File.GetLastWriteTime(f).Date)
+            .ToArray();
         if (files.Length > file_length)
         {
             Create(files[files.Length - 1]);
@@ -32,21 +41,20 @@ public class CreateManager : MonoBehaviour
 
     void Create(string file)
     {
+        //画像をspriteとして保存
         string tar = file.Remove(0, 17);
         tar = tar.Replace(".png", "");
-        //string tar = files[i].Substring(17, len);
-        // ResourcesフォルダからCubeプレハブのオブジェクトを取得
         Sprite img = Resources.Load<Sprite>(tar);
-        // プレハブを元にオブジェクトを生成する
-        // Instantiate (obj, new Vector3(0.0f, 6.0f, 0.0f), Quaternion.identity);
+        //オブジェクト生成
         GameObject obj = new GameObject();
-        GameObject instance = (GameObject)Instantiate(obj,
-                                                  new Vector3(0.0f, 6.0f, 0.0f),
-                                                  Quaternion.identity);
-        instance.AddComponent<SpriteRenderer>();
-        instance.AddComponent<Rigidbody2D>();
-        instance.AddComponent<PolygonCollider2D>();
-        instance.AddComponent<Animal>();
-        instance.GetComponent<SpriteRenderer>().sprite = img;
+        obj.AddComponent<SpriteRenderer>();
+        obj.GetComponent<SpriteRenderer>().sprite = img;
+        obj.AddComponent<PolygonCollider2D>();
+        //obj.GetComponent<SpriteRenderer>().sprite = img;
+        obj.AddComponent<Rigidbody2D>();
+        //obj.GetComponent<SpriteRenderer>().sprite = img;
+        obj.AddComponent<Animal>();
+        //obj.GetComponent<SpriteRenderer>().sprite = img;
+        obj.transform.position = new Vector3(0.0f, 6.0f, 0.0f);
     }
 }
