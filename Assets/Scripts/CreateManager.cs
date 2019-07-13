@@ -10,10 +10,12 @@ using UnityEngine.SceneManagement;
 
 public class CreateManager : MonoBehaviour
 {
-//    private GameObject obj;
+    private GameObject obj;
     public List<GameObject> people;//どうぶつ取得配列
     public bool isFall;
     int file_length;
+    public float pivotHeight = 3;//生成位置の基準
+    public Camera mainCamera;//カメラ取得用変数
     // Start is called before the first frame update
     void Init()
     {
@@ -62,19 +64,40 @@ public class CreateManager : MonoBehaviour
             Create(img);
             file_length += 1;
         }
+        Vector2 v = new Vector2(mainCamera.ScreenToWorldPoint(Input.mousePosition).x, pivotHeight);
+
+        if (Input.GetMouseButtonUp(0))//もし（マウス左クリックが離されたら）
+        {
+            if (!RotateButton.onButtonDown)//ボタンをクリックしていたら反応させない
+            {
+                obj.transform.position = v;
+                obj.GetComponent<Rigidbody2D>().isKinematic = false;//――――物理挙動・オン
+                isFall = true;//落ちて、どうぞ
+            }
+            RotateButton.onButtonDown = false;//マウスが上がったらボタンも離れたと思う
+        }
+        else if (Input.GetMouseButton(0))//ボタンが押されている間
+        {
+            obj.transform.position = v;
+        }
     }
 
     void Create(Sprite img)
     {
-        GameObject obj = new GameObject();
+        while (CameraController.isCollision)
+        {
+            mainCamera.transform.Translate(0, 0.1f, 0);//カメラを少し上に移動
+            pivotHeight += 0.1f;//生成位置も少し上に移動
+        }
+        isFall = false;
+        obj = new GameObject();
         obj.AddComponent<SpriteRenderer>();
         obj.GetComponent<SpriteRenderer>().sprite = img;
-        // print(obj.GetComponent<SpriteRenderer>().sprite);
         obj.AddComponent<PolygonCollider2D>();
         obj.AddComponent<Rigidbody2D>();
-        //obj.GetComponent<Rigidbody2D>().isKinematic = true;
+        obj.GetComponent<Rigidbody2D>().isKinematic = true;
         obj.AddComponent<Animal>();
-        obj.transform.position = new Vector3(0.0f, 6.0f, 0.0f);
+        obj.transform.position = new Vector3(0.0f, pivotHeight, 0.0f);
         people.Add(obj);
     }
 
@@ -110,5 +133,17 @@ public class CreateManager : MonoBehaviour
             }
         }
         return false;
+    }
+    
+    /// <summary>
+    /// どうぶつの回転
+    /// ボタンにつけて使います
+    /// </summary>
+    public void RotateAnimal()
+    {
+        if (!isFall)
+        {
+            obj.transform.Rotate(0, 0, -30);//30度ずつ回転
+        }
     }
 }

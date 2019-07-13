@@ -129,7 +129,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 352073305}
-  - component: {fileID: 352073304}
   - component: {fileID: 352073306}
   m_Layer: 0
   m_Name: GameManager
@@ -138,24 +137,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &352073304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 352073303}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b8e4a07482ab4ae4a78f0ccb0dec7bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animals:
-  - {fileID: 6757993424647738687, guid: e9db30be30b744296874635d32bdd46c, type: 3}
-  mainCamera: {fileID: 519420031}
-  pivotHeight: 3
-  isGene: 0
-  isFall: 0
 --- !u!4 &352073305
 Transform:
   m_ObjectHideFlags: 0
@@ -182,6 +163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0135b81e3856a49c899ae674e01a0a3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  people: []
+  isFall: 0
+  pivotHeight: 3
+  mainCamera: {fileID: 519420031}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,7 +485,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 157, y: 15}
+  m_AnchoredPosition: {x: 4, y: 18.6}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1226580568
@@ -558,15 +543,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11500000, guid: 1114184a6a95247a3af8e7ba87bbcf6a, type: 3}
-        m_MethodName: set_name
-        m_Mode: 5
+      - m_Target: {fileID: 352073306}
+        m_MethodName: RotateAnimal
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: AnimalGenerator.RotateAnimal
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
