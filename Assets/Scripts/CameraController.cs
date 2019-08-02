@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
     /// 衝突中を伝えるメソッド
     /// </summary>
     /// <param name="collision"></param>
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         isCollision = true;
         //Debug.Log(isCollision);

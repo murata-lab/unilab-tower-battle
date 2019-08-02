@@ -64,7 +64,7 @@ public class CreateManager : MonoBehaviour
             Create(img);
             file_length += 1;
         }
-        Vector2 v = new Vector2(mainCamera.ScreenToWorldPoint(Input.mousePosition).x, pivotHeight);
+        /*Vector2 v = new Vector2(mainCamera.ScreenToWorldPoint(Input.mousePosition).x, pivotHeight);
 
         if (Input.GetMouseButtonUp(0))//もし（マウス左クリックが離されたら）
         {
@@ -79,15 +79,16 @@ public class CreateManager : MonoBehaviour
         else if (Input.GetMouseButton(0))//ボタンが押されている間
         {
             obj.transform.position = v;
-        }
+        }*/
     }
 
     void Create(Sprite img)
     {
         while (CameraController.isCollision)
         {
-            mainCamera.transform.Translate(0, 0.1f, 0);//カメラを少し上に移動
+            mainCamera.transform.Translate(0, 0.1f, 0, Camera.main.transform);//カメラを少し上に移動
             pivotHeight += 0.1f;//生成位置も少し上に移動
+            Debug.Log(mainCamera);
         }
         isFall = false;
         obj = new GameObject();
@@ -95,7 +96,7 @@ public class CreateManager : MonoBehaviour
         obj.GetComponent<SpriteRenderer>().sprite = img;
         obj.AddComponent<PolygonCollider2D>();
         obj.AddComponent<Rigidbody2D>();
-        obj.GetComponent<Rigidbody2D>().isKinematic = true;
+        //obj.GetComponent<Rigidbody2D>().isKinematic = true;
         obj.AddComponent<Animal>();
         obj.transform.position = new Vector3(0.0f, pivotHeight, 0.0f);
         people.Add(obj);
