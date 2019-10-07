@@ -16,6 +16,7 @@ public class CreateManager : MonoBehaviour
     int file_length;
     public float pivotHeight = 3;//生成位置の基準
     public Camera mainCamera;//カメラ取得用変数
+    public GameObject cameracontroller;
     // Start is called before the first frame update
     void Init()
     {
@@ -29,6 +30,15 @@ public class CreateManager : MonoBehaviour
 
     void Start()
     {
+        
+        string[] files = Directory.GetFiles(
+              @"Assets/Resources", "*.png", SearchOption.AllDirectories
+              );
+        foreach (string file in files)
+        {
+            File.SetAttributes(file, FileAttributes.Normal);
+            File.Delete(file);
+        }
         Init();
     }
 
@@ -84,11 +94,21 @@ public class CreateManager : MonoBehaviour
 
     void Create(Sprite img)
     {
-        while (CameraController.isCollision)
+        /*while (CameraController.isCollision)
         {
-            mainCamera.transform.Translate(0, 0.1f, 0, Camera.main.transform);//カメラを少し上に移動
-            pivotHeight += 0.1f;//生成位置も少し上に移動
-            Debug.Log(mainCamera);
+            Debug.Log("collision_start");
+            cameracontroller.transform.Translate(0, 2.0f, 0);
+            mainCamera.transform.Translate(0, 2.0f, 0);//カメラを少し上に移動
+            pivotHeight += 2.0f;//生成位置も少し上に移動
+        Debug.Log("collision_fin");
+        }*/
+        if (CameraController.isCollision)
+        {
+            Debug.Log("collision_start");
+            cameracontroller.transform.Translate(0, 3.0f, 0);
+            mainCamera.transform.Translate(0, 3.0f, 0);
+            pivotHeight += 3.0f;
+            Debug.Log("collision_fin");
         }
         isFall = false;
         obj = new GameObject();

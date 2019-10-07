@@ -34,10 +34,10 @@ public class AnimalGenerator : MonoBehaviour
 
     // 毎フレーム呼び出される(60fpsだったら1秒間に60回)
     void Update()
-    {
+    {   
 
         if (isGameOver)
-        {
+        {        
             return;//ゲームオーバーならここで止める
         }
 

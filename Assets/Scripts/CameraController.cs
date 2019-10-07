@@ -11,8 +11,9 @@ public class CameraController : MonoBehaviour
     /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("true_start");
         isCollision = true;
-        //Debug.Log(isCollision);
+        Debug.Log("true_fin");
     }
 
     /// <summary>

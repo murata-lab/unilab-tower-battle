@@ -9,7 +9,7 @@ public class GameOver : MonoBehaviour
     public static bool isGameOver = false;
     // Start is called before the first frame update
     void Start()
-    {
+    {/*
         string[] files = Directory.GetFiles(
               @"Assets/Resources", "*.png", SearchOption.AllDirectories
               );
@@ -17,8 +17,9 @@ public class GameOver : MonoBehaviour
         {
             File.SetAttributes(file, FileAttributes.Normal);
             File.Delete(file);
-        }
+        }*/
     }
+
 
     // Update is called once per frame
     void Update()
