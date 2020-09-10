@@ -6,6 +6,8 @@
 任意の写真(png)を追加すると落ちてきます．
 土台から写真が落ちてしまったらゲームオーバーです．
 
+<img src=https://github.com/murata-lab/unilab-tower-battle/blob/master/demo.JPG width=50%>
+
 ## 使い方
 #### 1. unityをインストール
 Unityをインストールする
