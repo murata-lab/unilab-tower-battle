@@ -8,13 +8,13 @@
 
 ## 使い方
 #### 1. unityをインストール
-Unity HubをインストールしてからUnityをインストールする
+Unityをインストールする
 
 #### 2. レポジトリをクローン
 ```
 git clone https://github.com/murata-lab/unilab-tower-buttle.git
 ```
-をして，unity hubで開く．
+をして，unityで開く．
 
 #### 3. タワーを作る
 1. ProjectのAssets/Scenes/Mainを選択し，再生ボタンを押す（画面の大きさは再生ボタン下のバーで変えられます）
