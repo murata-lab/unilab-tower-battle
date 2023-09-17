@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.elringus.unitygoogledrive": {
+      "version": "https://github.com/Elringus/UnityGoogleDrive.git#package",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "605db6321fd98de30422215655b87493cd29a1e7"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
