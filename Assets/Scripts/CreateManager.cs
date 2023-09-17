@@ -22,7 +22,7 @@ public class CreateManager : MonoBehaviour
     {
         Animal.isMoves.Clear();//移動してる動物のリストを初期化
         string[] files = Directory.GetFiles(
-            @"Assets/Resources", "*.png", SearchOption.AllDirectories
+            Application.persistentDataPath, "*.png", SearchOption.AllDirectories
             ).ToArray();
         file_length = files.Length;
  //       obj = null;
@@ -32,7 +32,7 @@ public class CreateManager : MonoBehaviour
     {
         
         string[] files = Directory.GetFiles(
-              @"Assets/Resources", "*.png", SearchOption.AllDirectories
+              Application.persistentDataPath, "*.png", SearchOption.AllDirectories
               );
         foreach (string file in files)
         {
@@ -56,7 +56,7 @@ public class CreateManager : MonoBehaviour
             return;//移動中なら処理はここまで
         }
         string[] files = Directory.GetFiles(
-            @"Assets/Resources", "*.png", SearchOption.AllDirectories
+            Application.persistentDataPath, "*.png", SearchOption.AllDirectories
             ).OrderBy(f => File.GetLastWriteTime(f).Date
             ).ToArray();
         if (files.Length == 0){
@@ -64,10 +64,20 @@ public class CreateManager : MonoBehaviour
         }
         if (files.Length > file_length)
         {
-            string tar = files[files.Length - 1].Remove(0, 17);
-            tar = tar.Replace(".png", "");
-            Sprite img = Resources.Load(tar, typeof(Sprite)) as Sprite;
-//            Debug.Log(img);
+            //string tar = files[files.Length - 1].Remove(0, 17);
+            //tar = tar.Replace(".png", "");
+            //Sprite img = Resources.Load(tar, typeof(Sprite)) as Sprite;
+            string filePath = Application.persistentDataPath + "/picture_.png";
+            byte[] bytes = File.ReadAllBytes(files[0]);
+            Texture2D texture = new Texture2D(2, 2);
+            texture.LoadImage(bytes);
+            Rect rect = new Rect(0, 0, texture.width, texture.height);
+            Vector2 pivot = new Vector2(0.5f, 0.5f); // 中央をピボットとする
+            float pixelsPerUnit = 100.0f;
+
+            Sprite img = Sprite.Create(texture, rect, pivot, pixelsPerUnit);
+
+            Debug.Log(files[0]);
             if (img == null){
                 return;
             }
