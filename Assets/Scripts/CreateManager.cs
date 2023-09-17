@@ -48,9 +48,9 @@ public class CreateManager : MonoBehaviour
 //        if (obj && obj.transform.position.y < -5)
 //        {
 //        }
-        if (CheckGameOver(people)){
-          SceneManager.LoadScene ("GameOver");
-        }
+        //if (CheckGameOver(people)){
+        //  SceneManager.LoadScene ("GameOver");
+        //}
         if (CheckMove(Animal.isMoves))
         {
             return;//移動中なら処理はここまで
@@ -64,10 +64,6 @@ public class CreateManager : MonoBehaviour
         }
         if (files.Length > file_length)
         {
-            //string tar = files[files.Length - 1].Remove(0, 17);
-            //tar = tar.Replace(".png", "");
-            //Sprite img = Resources.Load(tar, typeof(Sprite)) as Sprite;
-            string filePath = Application.persistentDataPath + "/picture_.png";
             byte[] bytes = File.ReadAllBytes(files[0]);
             Texture2D texture = new Texture2D(2, 2);
             texture.LoadImage(bytes);
