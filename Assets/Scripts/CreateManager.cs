@@ -6,48 +6,41 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using UnityEngine.SceneManagement;
+using UnityGoogleDrive;
 
 
 public class CreateManager : MonoBehaviour
 {
+    private float _repeatSpan;    //繰り返す間隔
+    private float _timeElapsed;　 //経過時間
     private GameObject obj;
     public List<GameObject> people;//どうぶつ取得配列
     public bool isFall;
     int file_length;
+    UnityGoogleDrive.Data.FileList stateFileList;
+    List<string> fileIds = new List<string>();
+    List<string> statefileIds = new List<string>();
     public float pivotHeight = 3;//生成位置の基準
     public Camera mainCamera;//カメラ取得用変数
     public GameObject cameracontroller;
+    private const string folderId = "1kuN14vh4dfLBFFqew22rCdBZ1vRc2mou";
     // Start is called before the first frame update
     void Init()
     {
-        Animal.isMoves.Clear();//移動してる動物のリストを初期化
-        string[] files = Directory.GetFiles(
-            Application.persistentDataPath, "*.png", SearchOption.AllDirectories
-            ).ToArray();
-        file_length = files.Length;
- //       obj = null;
+        StartCoroutine(CompareGoogleDriveImages());
     }
 
     void Start()
     {
-        
-        string[] files = Directory.GetFiles(
-              Application.persistentDataPath, "*.png", SearchOption.AllDirectories
-              );
-        foreach (string file in files)
-        {
-            File.SetAttributes(file, FileAttributes.Normal);
-            File.Delete(file);
-        }
+        //var fileNameList = fileNames.ToList();
+        _repeatSpan = 5;    //実行間隔を５に設定
+        _timeElapsed = 0;   //経過時間をリセット
+
         Init();
     }
 
-    // Update is called once per frame
     void Update()
     {
-//        if (obj && obj.transform.position.y < -5)
-//        {
-//        }
         //if (CheckGameOver(people)){
         //  SceneManager.LoadScene ("GameOver");
         //}
@@ -55,31 +48,15 @@ public class CreateManager : MonoBehaviour
         {
             return;//移動中なら処理はここまで
         }
-        string[] files = Directory.GetFiles(
-            Application.persistentDataPath, "*.png", SearchOption.AllDirectories
-            ).OrderBy(f => File.GetLastWriteTime(f).Date
-            ).ToArray();
-        if (files.Length == 0){
-            return;
-        }
-        if (files.Length > file_length)
+        _timeElapsed += Time.deltaTime;
+
+        if (_timeElapsed >= _repeatSpan)
         {
-            byte[] bytes = File.ReadAllBytes(files[0]);
-            Texture2D texture = new Texture2D(2, 2);
-            texture.LoadImage(bytes);
-            Rect rect = new Rect(0, 0, texture.width, texture.height);
-            Vector2 pivot = new Vector2(0.5f, 0.5f); // 中央をピボットとする
-            float pixelsPerUnit = 100.0f;
 
-            Sprite img = Sprite.Create(texture, rect, pivot, pixelsPerUnit);
-
-            Debug.Log(files[0]);
-            if (img == null){
-                return;
-            }
-            Create(img);
-            file_length += 1;
+            StartCoroutine(CreateGoogleDriveImages());
+            _timeElapsed = 0;   //経過時間をリセットする
         }
+        
         /*Vector2 v = new Vector2(mainCamera.ScreenToWorldPoint(Input.mousePosition).x, pivotHeight);
 
         if (Input.GetMouseButtonUp(0))//もし（マウス左クリックが離されたら）
@@ -96,6 +73,71 @@ public class CreateManager : MonoBehaviour
         {
             obj.transform.position = v;
         }*/
+    }
+
+    IEnumerator CompareGoogleDriveImages()
+    {
+        var reqfiles = GoogleDriveFiles.List();
+        reqfiles.Fields = new List<string> { "files(id, name, size, mimeType, createdTime)" };
+        reqfiles.Q = $"\'{folderId}\' in parents and trashed = false";
+
+        yield return reqfiles.Send();
+
+        reqfiles.Send().OnDone +=
+            (filelist) =>
+            {
+                foreach (var file in filelist.Files)
+                {
+                    statefileIds.Add(file.Id);
+                }
+            };
+
+    }
+
+    IEnumerator CreateGoogleDriveImages()
+    {
+        var reqfiles = GoogleDriveFiles.List();
+        reqfiles.Fields = new List<string> { "files(id, name, size, mimeType, createdTime)" };
+        reqfiles.Q = $"\'{folderId}\' in parents and trashed = false";
+
+        yield return reqfiles.Send();
+
+
+        reqfiles.Send().OnDone +=
+            (filelist) =>
+            {
+                foreach (var file in filelist.Files)
+                {
+                    if (statefileIds.Contains(file.Id))
+                    {
+                        Debug.Log(file.Id);
+                    }
+                    else
+                    {
+                        var DLrequest = GoogleDriveFiles.Download(fileId: file.Id);
+                        DLrequest.Send().OnDone += (DLFile) =>
+                        {
+                            byte[] bytes = DLFile.Content;
+                            Texture2D texture = new Texture2D(2, 2);
+                            texture.LoadImage(bytes);
+                            Rect rect = new Rect(0, 0, texture.width, texture.height);
+                            Vector2 pivot = new Vector2(0.5f, 0.5f); // 中央をピボットとする
+                            float pixelsPerUnit = 100.0f;
+
+                            Sprite img = Sprite.Create(texture, rect, pivot, pixelsPerUnit);
+
+                            if (img == null)
+                            {
+                                return;
+                            }
+                            Create(img);
+                            statefileIds.Add(file.Id);
+                        };
+                    }
+
+                }
+            };
+
     }
 
     void Create(Sprite img)
